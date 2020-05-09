@@ -22,7 +22,7 @@ LIBS += -lxkbfile
 FILES:=$(wildcard *.c)
 FILES:=$(FILES:.c=.o)
 
-VERSION:=$(shell git describe --tags --abbrev=0)
+VERSION:=$(shell git rev-parse --short HEAD)
 GIT_VERSION:="$(shell git describe --tags --always) ($(shell git log --pretty=format:%cd --date=short -n1))"
 CPPFLAGS += -DVERSION=\"${GIT_VERSION}\"
 

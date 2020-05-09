@@ -77,7 +77,7 @@ static xcb_cursor_t cursor;
 static pam_handle_t *pam_handle;
 int input_position = 0;
 /* Holds the password you enter (in UTF-8). */
-static char password[512];
+char password[512];
 static bool beep = false;
 bool debug_mode = false;
 static bool dpms = false;
@@ -129,6 +129,17 @@ static void turn_monitors_on(void) {
 static void turn_monitors_off(void) {
     if (dpms)
         dpms_set_mode(conn, XCB_DPMS_DPMS_MODE_OFF);
+}
+
+
+/*
+ Switch keyboard layout to 'en' 
+*/
+void setLayoutToUS(Display* _display, int _deviceId) {
+    Bool result = XkbLockGroup(_display, _deviceId, 0);
+    if (result == False) {
+        fprintf (stdout, "failed to XkbLockGroup\n");
+    }
 }
 
 /*
@@ -320,7 +331,7 @@ static void handle_key_press(xcb_key_press_event_t *event) {
     char buffer[128];
     int n;
     bool ctrl;
-
+    setLayoutToUS(_display, _deviceId);
     ksym = xkb_state_key_get_one_sym(xkb_state, event->detail);
     ctrl = xkb_state_mod_name_is_active(xkb_state, "Control", XKB_STATE_MODS_DEPRESSED);
 
@@ -576,6 +587,7 @@ static void xcb_prepare_cb(EV_P_ ev_prepare *w, int revents) {
  */
 static void xcb_check_cb(EV_P_ ev_check *w, int revents) {
     xcb_generic_event_t *event;
+    setLayoutToUS(_display, _deviceId);
 
     if (xcb_connection_has_error(conn))
         errx(EXIT_FAILURE, "X11 connection broke, did your server terminate?\n");

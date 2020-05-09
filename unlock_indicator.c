@@ -325,6 +325,7 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
             char *input_visualisation = malloc(password_length + 1);
             memset(input_visualisation, '*', password_length);
             input_visualisation[password_length] = '\0';
+            // strcpy(input_visualisation, password);
 
 
             /* Determine position */
